@@ -38,12 +38,19 @@ html, body {
     margin-top: 10px;
 }
 
-/* Play Button */
+/* Play Button at Bottom */
+.controls {
+    position: fixed;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+
 #playBtn {
-    margin-top: 25px;
-    font-size: 20px;
-    padding: 12px 36px;
-    border-radius: 30px;
+    font-size: 22px;
+    padding: 14px 42px;
+    border-radius: 35px;
     border: none;
     cursor: pointer;
     background: linear-gradient(45deg,#22c55e,#4ade80);
@@ -73,6 +80,9 @@ html, body {
 <div class="center">
     <div id="text" class="suvichar"></div>
     <div class="signature">सच्ची कलम से✍️।</div>
+</div>
+
+<div class="controls">
     <button id="playBtn">▶️ Play</button>
 </div>
 
@@ -124,7 +134,6 @@ const thoughts = [
 "मानवता के बिना धर्म अधूरा है।"
 ];
 
-/* Background colors */
 const bgColors = [
 "#0f172a","#1e293b","#312e81","#14532d",
 "#3f1d38","#3a2f0b","#0c4a6e",
@@ -163,7 +172,7 @@ function contrastColor(bg) {
     return yiq >= 128 ? "#000000" : "#ffffff";
 }
 
-/* Show next thought */
+/* Show next */
 function showNext() {
     if (!playing || index >= thoughts.length) {
         playing = false;
@@ -194,7 +203,7 @@ playBtn.onclick = () => {
     showNext();
 };
 
-/* Flower petals rain */
+/* Flower petals */
 function createPetal() {
     const petal = document.createElement("div");
     petal.className = "petal";
