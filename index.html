@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>सुविचार वाचन</title>
+<title>धार्मिक सुविचार वाचन</title>
 
 <style>
 html, body {
@@ -77,18 +77,58 @@ html, body {
 </div>
 
 <script>
+/* ===== 50 सुविचार ===== */
 const thoughts = [
 "ईश्वर वहाँ नहीं मिलता जहाँ दिखावा होता है, वह वहाँ मिलता है जहाँ समर्पण होता है।",
 "धर्म कर्म से पहचाना जाता है, शब्दों से नहीं।",
+"सच्ची भक्ति वह है जो मन को शुद्ध करे।",
+"जिसने स्वयं को जीत लिया, उसने संसार को जीत लिया।",
+"अहंकार भक्ति का सबसे बड़ा शत्रु है।",
 "सेवा में किया गया कर्म, सबसे बड़ी पूजा है।",
+"ईमानदारी आत्मा का आभूषण है।",
+"धर्म भय नहीं, विवेक सिखाता है।",
+"मौन में की गई प्रार्थना सबसे गहरी होती है।",
 "जो सबमें ईश्वर देखे, वही सच्चा धार्मिक है।",
+
+"संयम जीवन को दिव्यता देता है।",
+"क्रोध बुद्धि को ढक देता है, क्षमा उसे उजागर करती है।",
+"धर्म का मार्ग कठिन है, पर कल्याणकारी है।",
+"पवित्र मन ही सच्चा मंदिर है।",
+"कर्म से भागने वाला धर्म से भी दूर हो जाता है।",
+"दूसरों का दुःख समझना ही करुणा है।",
+"जहाँ लोभ है, वहाँ धर्म नहीं टिकता।",
+"श्रद्धा बिना विवेक अंधी होती है।",
+"विनम्रता ईश्वर के निकट ले जाती है।",
+"सच्चा धर्म वही है जो मानवता सिखाए।",
+
+"प्रार्थना आत्मा की श्वास है।",
+"समय का सदुपयोग ईश्वर की कृपा है।",
+"जो मिला है उसमें संतोष, यही सबसे बड़ा धन है।",
+"छल से अर्जित सुख शीघ्र नष्ट हो जाता है।",
+"धर्म दिखाने की वस्तु नहीं, जीने की कला है।",
+"परोपकार से बड़ा कोई यज्ञ नहीं।",
+"मन की शुद्धता ही मोक्ष का द्वार है।",
 "सत्य के मार्ग पर चलने वाला कभी अकेला नहीं होता।",
+"धर्म का उद्देश्य जोड़ना है, तोड़ना नहीं।",
+"जो क्षमा कर सकता है, वही महान है।",
+
+"भक्ति में सरलता, जीवन में शांति लाती है।",
+"धर्म का सार करुणा और प्रेम है।",
+"कर्म फल से बंधता है, भावना से मुक्त होता है।",
+"आत्मसंयम ही आत्मोन्नति का मार्ग है।",
+"धर्म का पालन पहले स्वयं से शुरू करो।",
+"पवित्र विचार, पवित्र जीवन रचते हैं।",
+"जो दूसरों को गिराकर ऊँचा हो, वह धार्मिक नहीं।",
+"ईश्वर तक पहुँचने का मार्ग मन से होकर जाता है।",
+"सदाचार सबसे बड़ा व्रत है।",
 "मानवता के बिना धर्म अधूरा है।"
 ];
 
+/* Background colors */
 const bgColors = [
 "#0f172a","#1e293b","#312e81","#14532d",
-"#3f1d38","#3a2f0b","#0c4a6e"
+"#3f1d38","#3a2f0b","#0c4a6e",
+"#1f2937","#4c0519","#052e16"
 ];
 
 let index = 0;
@@ -96,8 +136,9 @@ let playing = false;
 
 const textEl = document.getElementById("text");
 const playBtn = document.getElementById("playBtn");
+const signEl = document.querySelector(".signature");
 
-/* Female Voice */
+/* Female voice */
 function getFemaleVoice() {
     const voices = speechSynthesis.getVoices();
     return voices.find(v => v.lang.includes("hi")) || voices[0];
@@ -122,7 +163,7 @@ function contrastColor(bg) {
     return yiq >= 128 ? "#000000" : "#ffffff";
 }
 
-/* Show next */
+/* Show next thought */
 function showNext() {
     if (!playing || index >= thoughts.length) {
         playing = false;
@@ -135,13 +176,13 @@ function showNext() {
 
     const textColor = contrastColor(bg);
     textEl.style.color = textColor;
-    document.querySelector(".signature").style.color = textColor;
+    signEl.style.color = textColor;
 
     textEl.textContent = thoughts[index];
     speak(thoughts[index]);
 
     index++;
-    setTimeout(showNext, 5000);
+    setTimeout(showNext, 5200);
 }
 
 playBtn.onclick = () => {
@@ -153,7 +194,7 @@ playBtn.onclick = () => {
     showNext();
 };
 
-/* Flower rain */
+/* Flower petals rain */
 function createPetal() {
     const petal = document.createElement("div");
     petal.className = "petal";
@@ -161,11 +202,10 @@ function createPetal() {
     petal.style.left = Math.random() * 100 + "vw";
     petal.style.animationDuration = (5 + Math.random()*5) + "s";
     document.body.appendChild(petal);
-
     setTimeout(() => petal.remove(), 10000);
 }
 
-setInterval(createPetal, 300);
+setInterval(createPetal, 250);
 </script>
 
 </body>
