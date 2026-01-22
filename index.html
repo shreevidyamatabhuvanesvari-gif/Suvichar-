@@ -6,26 +6,24 @@
 
 <style>
 body {
-    background: #0f172a;
-    color: #e5e7eb;
-    font-family: "Noto Serif Devanagari", serif;
     margin: 0;
+    background: #0f172a;
+    font-family: "Noto Serif Devanagari", serif;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Play Button */
 .controls {
     position: absolute;
     top: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
 }
 
 #playBtn {
     font-size: 20px;
-    padding: 12px 34px;
+    padding: 12px 36px;
     border-radius: 30px;
     border: none;
     cursor: pointer;
@@ -34,27 +32,29 @@ body {
     font-weight: bold;
 }
 
-/* Suvichar Container */
-.container {
-    max-width: 80%;
+/* Center Container */
+.center-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
     text-align: center;
 }
 
 /* Suvichar Line */
 .line {
-    font-size: 36px;
+    font-size: 42px;
+    line-height: 1.6;
     opacity: 0;
     transform: translateY(40px);
     transition: all 0.8s ease;
-    line-height: 1.5;
 }
 
 .line.active {
-    color: #fde047;
-    font-size: 42px;
     opacity: 1;
     transform: translateY(0);
-    text-shadow: 0 0 14px rgba(253,224,71,0.8);
+    text-shadow: 0 0 16px rgba(255,255,255,0.4);
 }
 </style>
 </head>
@@ -65,7 +65,7 @@ body {
     <button id="playBtn">▶️ Play सुविचार</button>
 </div>
 
-<div class="container" id="container"></div>
+<div class="center-wrapper" id="container"></div>
 
 <script>
 const thoughts = [
@@ -121,18 +121,22 @@ const thoughts = [
 "इसलिए हर क्षण श्रेष्ठ कर्म चुनो।"
 ];
 
+const colors = [
+"#fde047", "#38bdf8", "#f472b6", "#4ade80",
+"#fb923c", "#a78bfa", "#facc15", "#22d3ee",
+"#f87171", "#34d399"
+];
+
 const container = document.getElementById("container");
 const playBtn = document.getElementById("playBtn");
 
 let index = 0;
 let isPlaying = false;
 
-// महिला आवाज चुनना
+// महिला आवाज
 function getFemaleVoice() {
     const voices = speechSynthesis.getVoices();
-    return voices.find(v =>
-        v.lang.includes("hi")
-    ) || voices[0];
+    return voices.find(v => v.lang.includes("hi")) || voices[0];
 }
 
 function speakLine(text) {
@@ -140,14 +144,13 @@ function speakLine(text) {
     utterance.voice = getFemaleVoice();
     utterance.rate = 0.85;
     utterance.pitch = 1.2;
-    utterance.volume = 1;
     speechSynthesis.speak(utterance);
 }
 
 function showNext() {
     if (!isPlaying || index >= thoughts.length) {
-        playBtn.textContent = "▶️ Play सुविचार";
         isPlaying = false;
+        playBtn.textContent = "▶️ Play सुविचार";
         return;
     }
 
@@ -155,6 +158,7 @@ function showNext() {
     const line = document.createElement("div");
     line.className = "line active";
     line.textContent = thoughts[index];
+    line.style.color = colors[index % colors.length];
     container.appendChild(line);
 
     speakLine(thoughts[index]);
