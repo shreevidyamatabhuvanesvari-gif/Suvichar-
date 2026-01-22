@@ -14,7 +14,7 @@ body {
 
 .container {
     position: absolute;
-    bottom: 40px;
+    bottom: 60px;
     width: 100%;
     text-align: center;
 }
@@ -34,10 +34,36 @@ body {
     transform: translateY(0);
     text-shadow: 0 0 12px rgba(253,224,71,0.8);
 }
+
+/* Play Button */
+.controls {
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+#playBtn {
+    font-size: 20px;
+    padding: 10px 30px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(45deg,#22c55e,#4ade80);
+    color: #022c22;
+    font-weight: bold;
+}
+#playBtn:hover {
+    transform: scale(1.05);
+}
 </style>
 </head>
 
 <body>
+
+<div class="controls">
+    <button id="playBtn">▶️ Play सुविचार</button>
+</div>
 
 <div class="container" id="container"></div>
 
@@ -96,7 +122,10 @@ const thoughts = [
 ];
 
 const container = document.getElementById("container");
+const playBtn = document.getElementById("playBtn");
+
 let index = 0;
+let isPlaying = false;
 
 // महिला आवाज चुनना
 function getFemaleVoice() {
@@ -104,7 +133,6 @@ function getFemaleVoice() {
     return voices.find(v =>
         v.lang.includes("hi") &&
         (v.name.toLowerCase().includes("female") ||
-         v.name.toLowerCase().includes("woman") ||
          v.name.toLowerCase().includes("zira") ||
          v.name.toLowerCase().includes("kalpana"))
     ) || voices.find(v => v.lang.includes("hi")) || voices[0];
@@ -120,7 +148,11 @@ function speakLine(text) {
 }
 
 function showNext() {
-    if (index >= thoughts.length) return;
+    if (!isPlaying || index >= thoughts.length) {
+        playBtn.textContent = "▶️ Play सुविचार";
+        isPlaying = false;
+        return;
+    }
 
     container.innerHTML = "";
     const line = document.createElement("div");
@@ -134,7 +166,13 @@ function showNext() {
     setTimeout(showNext, 4200);
 }
 
-speechSynthesis.onvoiceschanged = () => {
+playBtn.onclick = () => {
+    if (isPlaying) return;
+
+    speechSynthesis.cancel();
+    index = 0;
+    isPlaying = true;
+    playBtn.textContent = "⏸️ Playing...";
     showNext();
 };
 </script>
