@@ -5,23 +5,42 @@
 <title>सुविचार वाचन</title>
 
 <style>
-body {
+html, body {
     margin: 0;
-    background: #0f172a;
-    font-family: "Noto Serif Devanagari", serif;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    font-family: "Noto Serif Devanagari", serif;
+    transition: background-color 2s linear;
+}
+
+/* Center Content */
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 85%;
+    z-index: 5;
+}
+
+.suvichar {
+    font-size: 42px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    transition: color 1s;
+}
+
+.signature {
+    font-size: 32px;
+    margin-top: 10px;
 }
 
 /* Play Button */
-.controls {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-}
-
 #playBtn {
+    margin-top: 25px;
     font-size: 20px;
     padding: 12px 36px;
     border-radius: 30px;
@@ -32,149 +51,121 @@ body {
     font-weight: bold;
 }
 
-/* Center Container */
-.center-wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 85%;
-    text-align: center;
+/* Flower petals */
+.petal {
+    position: fixed;
+    top: -50px;
+    font-size: 24px;
+    animation: fall linear infinite;
+    opacity: 0.8;
 }
 
-/* Suvichar Line */
-.line {
-    font-size: 42px;
-    line-height: 1.6;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease;
-}
-
-.line.active {
-    opacity: 1;
-    transform: translateY(0);
-    text-shadow: 0 0 16px rgba(255,255,255,0.4);
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="controls">
-    <button id="playBtn">▶️ Play सुविचार</button>
+<div class="center">
+    <div id="text" class="suvichar"></div>
+    <div class="signature">सच्ची कलम से✍️।</div>
+    <button id="playBtn">▶️ Play</button>
 </div>
-
-<div class="center-wrapper" id="container"></div>
 
 <script>
 const thoughts = [
-"जीवन एक अवसर है, इसे बोझ मत बनाओ।",
-"समय बहता नदी है, इसे रोको नहीं, समझो।",
-"जो मिला है, उसका सम्मान करना सीखो।",
-"जो नहीं मिला, उसके लिए धैर्य रखो।",
-"सपने वही सच्चे होते हैं, जिनके लिए जागा जाए।",
-"मेहनत मौन होती है, परिणाम बोलते हैं।",
-"हार केवल विराम है, अंत नहीं।",
-"आत्मविश्वास से बड़ा कोई हथियार नहीं।",
-"भय भविष्य की कल्पना मात्र है।",
-"वर्तमान ही सबसे बड़ा सत्य है।",
-"छोटी शुरुआत महान अंत बन सकती है।",
-"सोच बदलो, संसार बदल जाएगा।",
-"शब्द कम, कर्म अधिक होने चाहिए।",
-"स्वयं पर विजय सबसे बड़ी जीत है।",
-"कठिनाइयाँ चरित्र को निखारती हैं।",
-"सफलता अनुशासन की पुत्री है।",
-"अहंकार ज्ञान का शत्रु है।",
-"विनम्रता महानता की पहचान है।",
-"असफलता अनुभव का दूसरा नाम है।",
-"सीखना कभी बंद मत करो।",
-"ईमानदारी आत्मा की शांति है।",
-"धैर्य समय की परीक्षा पास करता है।",
-"क्रोध बुद्धि को अंधा कर देता है।",
-"शांति शक्ति का सर्वोच्च रूप है।",
-"लक्ष्य स्पष्ट हो तो मार्ग स्वयं बनता है।",
-"तुलना खुशी की सबसे बड़ी चोर है।",
-"स्वयं से प्रतिस्पर्धा करो, संसार से नहीं।",
-"हर दिन स्वयं को बेहतर बनाओ।",
-"अंधकार को कोसने से दीप जलाना बेहतर है।",
-"नकारात्मकता से दूरी बनाओ।",
-"सकारात्मक सोच ऊर्जा देती है।",
-"जो बदल सकता है, वही जीवित है।",
-"परिस्थितियाँ नहीं, निर्णय भविष्य बनाते हैं।",
-"विश्वास से असंभव भी संभव होता है।",
-"मौन में भी गहरी शक्ति होती है।",
-"सत्य सरल होता है, पर सशक्त।",
-"अनुशासन स्वतंत्रता की कुंजी है।",
-"कर्म ही सच्ची पूजा है।",
-"समय का सम्मान जीवन बढ़ाता है।",
-"लक्ष्य पर टिके रहना ही साधना है।",
-"आज किया गया प्रयास कल की नींव है।",
-"बहाने प्रगति को रोकते हैं।",
-"साहस डर के बाद जन्म लेता है।",
-"स्वयं को जानना सबसे बड़ी शिक्षा है।",
-"संतुलन ही सुख का मार्ग है।",
-"कृतज्ञता मन को समृद्ध बनाती है।",
-"सरल जीवन उच्च विचार देता है।",
-"दृढ़ निश्चय चमत्कार करता है।",
-"अंततः कर्म ही पहचान बनता है।",
-"इसलिए हर क्षण श्रेष्ठ कर्म चुनो।"
+"ईश्वर वहाँ नहीं मिलता जहाँ दिखावा होता है, वह वहाँ मिलता है जहाँ समर्पण होता है।",
+"धर्म कर्म से पहचाना जाता है, शब्दों से नहीं।",
+"सेवा में किया गया कर्म, सबसे बड़ी पूजा है।",
+"जो सबमें ईश्वर देखे, वही सच्चा धार्मिक है।",
+"सत्य के मार्ग पर चलने वाला कभी अकेला नहीं होता।",
+"मानवता के बिना धर्म अधूरा है।"
 ];
 
-const colors = [
-"#fde047", "#38bdf8", "#f472b6", "#4ade80",
-"#fb923c", "#a78bfa", "#facc15", "#22d3ee",
-"#f87171", "#34d399"
+const bgColors = [
+"#0f172a","#1e293b","#312e81","#14532d",
+"#3f1d38","#3a2f0b","#0c4a6e"
 ];
-
-const container = document.getElementById("container");
-const playBtn = document.getElementById("playBtn");
 
 let index = 0;
-let isPlaying = false;
+let playing = false;
 
-// महिला आवाज
+const textEl = document.getElementById("text");
+const playBtn = document.getElementById("playBtn");
+
+/* Female Voice */
 function getFemaleVoice() {
     const voices = speechSynthesis.getVoices();
     return voices.find(v => v.lang.includes("hi")) || voices[0];
 }
 
-function speakLine(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = getFemaleVoice();
-    utterance.rate = 0.85;
-    utterance.pitch = 1.2;
-    speechSynthesis.speak(utterance);
+function speak(text) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = getFemaleVoice();
+    u.rate = 0.85;
+    u.pitch = 1.2;
+    speechSynthesis.speak(u);
 }
 
+/* Contrast color */
+function contrastColor(bg) {
+    const c = bg.substring(1);
+    const rgb = parseInt(c,16);
+    const r = (rgb>>16)&255;
+    const g = (rgb>>8)&255;
+    const b = rgb&255;
+    const yiq = (r*299 + g*587 + b*114)/1000;
+    return yiq >= 128 ? "#000000" : "#ffffff";
+}
+
+/* Show next */
 function showNext() {
-    if (!isPlaying || index >= thoughts.length) {
-        isPlaying = false;
-        playBtn.textContent = "▶️ Play सुविचार";
+    if (!playing || index >= thoughts.length) {
+        playing = false;
+        playBtn.textContent = "▶️ Play";
         return;
     }
 
-    container.innerHTML = "";
-    const line = document.createElement("div");
-    line.className = "line active";
-    line.textContent = thoughts[index];
-    line.style.color = colors[index % colors.length];
-    container.appendChild(line);
+    const bg = bgColors[index % bgColors.length];
+    document.body.style.backgroundColor = bg;
 
-    speakLine(thoughts[index]);
+    const textColor = contrastColor(bg);
+    textEl.style.color = textColor;
+    document.querySelector(".signature").style.color = textColor;
+
+    textEl.textContent = thoughts[index];
+    speak(thoughts[index]);
+
     index++;
-
-    setTimeout(showNext, 4200);
+    setTimeout(showNext, 5000);
 }
 
 playBtn.onclick = () => {
-    if (isPlaying) return;
+    if (playing) return;
     speechSynthesis.cancel();
     index = 0;
-    isPlaying = true;
-    playBtn.textContent = "⏸️ Playing...";
+    playing = true;
+    playBtn.textContent = "🔊 Playing...";
     showNext();
 };
+
+/* Flower rain */
+function createPetal() {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.textContent = "🌸";
+    petal.style.left = Math.random() * 100 + "vw";
+    petal.style.animationDuration = (5 + Math.random()*5) + "s";
+    document.body.appendChild(petal);
+
+    setTimeout(() => petal.remove(), 10000);
+}
+
+setInterval(createPetal, 300);
 </script>
 
 </body>
