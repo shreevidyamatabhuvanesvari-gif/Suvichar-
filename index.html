@@ -2,158 +2,160 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>सुविचार – Voice Highlight</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 सुविचार</title>
 
 <style>
-body{
-  margin:0;
-  background:linear-gradient(180deg,#1a1a1a,#2c0f0f);
-  font-family: "Noto Sans Devanagari", system-ui;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:#fff;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: linear-gradient(180deg, #fff0e6, #ffe4f0);
+    font-family: "Noto Sans Devanagari", system-ui;
+    overflow: hidden;
+  }
 
-.container{
-  width:90%;
-  max-width:600px;
-  background:rgba(0,0,0,0.6);
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 0 30px rgba(255,120,120,0.4);
-}
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
+  }
 
-.play-btn{
-  display:block;
-  margin:10px auto 20px;
-  background:#ff6b6b;
-  border:none;
-  color:#fff;
-  padding:12px 22px;
-  border-radius:25px;
-  font-size:18px;
-  cursor:pointer;
-}
+  .suvichar {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    font-size: 22px;
+    line-height: 1.8;
+    color: #5a2a2a;
+    animation: rise 40s linear forwards;
+  }
 
-.quotes{
-  height:320px;
-  overflow:hidden;
-  position:relative;
-}
+  .line {
+    opacity: 0.3;
+    transition: opacity 0.5s;
+  }
 
-.line{
-  text-align:center;
-  margin:12px 0;
-  opacity:0.5;
-  transition:all 0.4s;
-}
+  .line.active {
+    opacity: 1;
+  }
 
-.line.active{
-  opacity:1;
-  color:#ffdada;
-  font-size:18px;
-}
+  .word.active {
+    background: #ffb6c1;
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
 
-.word{
-  padding:2px 4px;
-}
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
-.word.active{
-  background:#ffb3b3;
-  color:#000;
-  border-radius:4px;
-}
+  button {
+    font-size: 18px;
+    padding: 14px 26px;
+    border-radius: 30px;
+    border: none;
+    background: #c94b6a;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  @keyframes rise {
+    from { transform: translateY(60%); }
+    to   { transform: translateY(-120%); }
+  }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <button class="play-btn" onclick="start()">▶️ Play</button>
-  <div class="quotes" id="quotes"></div>
+  <div id="text" class="suvichar"></div>
+</div>
+
+<div class="controls">
+  <button onclick="play()">▶️ प्ले</button>
 </div>
 
 <script>
 const lines = [
-"जीवन की सबसे बड़ी शक्ति ज्ञान नहीं, विवेक होता है।",
-"ज्ञान दिशा देता है, पर विवेक गति को नियंत्रित करता है।",
-"जो सीखता है वह आगे बढ़ता है, जो समझता है वह टिकता है।",
-"हर सही उत्तर बोलना आवश्यक नहीं, कभी मौन भी उत्तर होता है।",
-"सत्य हमेशा कठोर नहीं होता, पर झूठ कभी कोमल नहीं होता।",
-"जो स्वयं को जीत ले, वही संसार को समझ पाता है।",
-"तकनीक साधन है, चेतना लक्ष्य है।",
-"भावनाओं को दबाना नहीं, समझना परिपक्वता है।",
-"शक्ति का मूल्य नियंत्रण में नहीं, उत्तरदायित्व में है।",
-"जो प्रश्न पूछना छोड़ देता है, वही सीखना छोड़ देता है।",
-"समय से पहले निष्कर्ष, सबसे महंगी भूल होती है।",
-"मनुष्य का मूल्य उसके विचारों से तय होता है।",
-"स्वतंत्र सोच अनुशासन से जन्म लेती है।",
-"ज्ञान संग्रह नहीं, संस्कार बनना चाहिए।",
-"सही मार्ग अक्सर शांत होता है।",
-"जो बदलने से डरता है, वही स्थिर नहीं रह पाता।",
-"बुद्धि बिना करुणा के अधूरी है।",
-"प्रगति का अर्थ सही दिशा है।",
-"हर चेतना सम्मान चाहती है।",
-"सार्थक वही है जो सक्षम बनाए।"
+  "जीवन की सबसे बड़ी शक्ति शांत मन है।",
+  "जो स्वयं को समझ लेता है, वह संसार को समझ सकता है।",
+  "हर अंधकार के बाद प्रकाश निश्चित है।",
+  "धैर्य वह बीज है जिससे सफलता उगती है।",
+  "सत्य सरल होता है, अहंकार उसे जटिल बनाता है।",
+  "आज का सही कर्म भविष्य को सुंदर बनाता है।",
+  "जो बदल सकता है, वही जीवित है।",
+  "ज्ञान विनम्रता से महान बनता है।",
+  "विश्वास बिना शोर के भी प्रभावी होता है।",
+  "शांत हृदय ही सच्चा विजेता होता है।"
 ];
 
-const box = document.getElementById("quotes");
+const container = document.getElementById("text");
 let voices = [];
 
 speechSynthesis.onvoiceschanged = () => {
   voices = speechSynthesis.getVoices();
 };
 
-function render(){
-  box.innerHTML="";
-  lines.slice().reverse().forEach((l,i)=>{
-    const div=document.createElement("div");
-    div.className="line";
-    div.dataset.index=i;
-    l.split(" ").forEach(w=>{
-      const span=document.createElement("span");
-      span.className="word";
-      span.textContent=w+" ";
+function play() {
+  container.innerHTML = "";
+  container.style.animation = "rise 40s linear forwards";
+
+  let delay = 0;
+
+  lines.forEach((line, i) => {
+    const div = document.createElement("div");
+    div.className = "line";
+    const words = line.split(" ");
+
+    words.forEach(w => {
+      const span = document.createElement("span");
+      span.textContent = w + " ";
+      span.className = "word";
       div.appendChild(span);
     });
-    box.appendChild(div);
+
+    container.appendChild(div);
+
+    setTimeout(() => {
+      speakLine(div, line);
+    }, delay);
+
+    delay += line.length * 120 + 800; // प्राकृतिक pause
   });
 }
 
-render();
+function speakLine(div, text) {
+  document.querySelectorAll(".line").forEach(l => l.classList.remove("active"));
+  div.classList.add("active");
 
-async function start(){
-  speechSynthesis.cancel();
-  const female = voices.find(v=>v.lang.includes("hi") && v.name.toLowerCase().includes("female"))
-              || voices.find(v=>v.lang.includes("hi"))
-              || voices[0];
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "hi-IN";
+  utter.rate = 0.9;   // महिला जैसी गति
+  utter.pitch = 1.2;
 
-  const lineEls=[...document.querySelectorAll(".line")];
+  const female = voices.find(v => v.lang === "hi-IN");
+  if (female) utter.voice = female;
 
-  for(let i=lineEls.length-1;i>=0;i--){
-    const line=lineEls[i];
-    lineEls.forEach(l=>l.classList.remove("active"));
-    line.classList.add("active");
+  const words = div.querySelectorAll(".word");
+  let i = 0;
 
-    const words=[...line.querySelectorAll(".word")];
-    for(let w of words){
-      words.forEach(x=>x.classList.remove("active"));
-      w.classList.add("active");
-
-      const utter=new SpeechSynthesisUtterance(w.textContent);
-      utter.voice=female;
-      utter.rate=0.85;
-      utter.pitch=1.2;
-
-      speechSynthesis.speak(utter);
-      await waitForEnd(utter);
+  utter.onboundary = e => {
+    if (e.name === "word" && words[i]) {
+      words.forEach(w => w.classList.remove("active"));
+      words[i].classList.add("active");
+      i++;
     }
-  }
-}
+  };
 
-function waitForEnd(u){
-  return new Promise(res=>u.onend=res);
+  speechSynthesis.speak(utter);
 }
 </script>
 </body>
