@@ -9,43 +9,23 @@ body {
     background: #0f172a;
     color: #e5e7eb;
     font-family: "Noto Serif Devanagari", serif;
+    margin: 0;
     overflow: hidden;
-}
-
-.container {
-    position: absolute;
-    bottom: 60px;
-    width: 100%;
-    text-align: center;
-}
-
-.line {
-    font-size: 26px;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease;
-    margin: 12px 0;
-}
-
-.line.active {
-    color: #fde047;
-    font-size: 30px;
-    opacity: 1;
-    transform: translateY(0);
-    text-shadow: 0 0 12px rgba(253,224,71,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Play Button */
 .controls {
-    position: fixed;
+    position: absolute;
     top: 20px;
-    width: 100%;
-    text-align: center;
 }
 
 #playBtn {
     font-size: 20px;
-    padding: 10px 30px;
+    padding: 12px 34px;
     border-radius: 30px;
     border: none;
     cursor: pointer;
@@ -53,8 +33,28 @@ body {
     color: #022c22;
     font-weight: bold;
 }
-#playBtn:hover {
-    transform: scale(1.05);
+
+/* Suvichar Container */
+.container {
+    max-width: 80%;
+    text-align: center;
+}
+
+/* Suvichar Line */
+.line {
+    font-size: 36px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+    line-height: 1.5;
+}
+
+.line.active {
+    color: #fde047;
+    font-size: 42px;
+    opacity: 1;
+    transform: translateY(0);
+    text-shadow: 0 0 14px rgba(253,224,71,0.8);
 }
 </style>
 </head>
@@ -131,11 +131,8 @@ let isPlaying = false;
 function getFemaleVoice() {
     const voices = speechSynthesis.getVoices();
     return voices.find(v =>
-        v.lang.includes("hi") &&
-        (v.name.toLowerCase().includes("female") ||
-         v.name.toLowerCase().includes("zira") ||
-         v.name.toLowerCase().includes("kalpana"))
-    ) || voices.find(v => v.lang.includes("hi")) || voices[0];
+        v.lang.includes("hi")
+    ) || voices[0];
 }
 
 function speakLine(text) {
@@ -168,7 +165,6 @@ function showNext() {
 
 playBtn.onclick = () => {
     if (isPlaying) return;
-
     speechSynthesis.cancel();
     index = 0;
     isPlaying = true;
