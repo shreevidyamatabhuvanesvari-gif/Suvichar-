@@ -6,59 +6,35 @@
 <title>सुविचार</title>
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: linear-gradient(#0f2027, #203a43, #2c5364);
-  font-family: "Noto Sans Devanagari", system-ui;
-  color: #fff;
-  overflow: hidden;
+html,body{
+  margin:0;height:100%;
+  background:linear-gradient(#0f2027,#203a43,#2c5364);
+  font-family:"Noto Sans Devanagari",system-ui;
+  color:#fff;overflow:hidden
 }
-
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.container{
+  height:100%;display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center
 }
-
-#playBtn {
-  padding: 14px 28px;
-  font-size: 18px;
-  border-radius: 30px;
-  border: none;
-  background: #ffd369;
-  color: #000;
-  cursor: pointer;
-  margin-bottom: 20px;
+#playBtn{
+  padding:14px 30px;
+  font-size:18px;border-radius:30px;
+  border:none;background:#ffd369;
+  color:#000;cursor:pointer;
+  opacity:.5
 }
-
-#lines {
-  position: absolute;
-  bottom: 10%;
-  width: 90%;
-  text-align: center;
+#playBtn.ready{opacity:1}
+#lineBox{
+  position:absolute;bottom:12%;
+  width:90%;text-align:center
 }
-
-.line {
-  opacity: 0.3;
-  font-size: 18px;
-  margin: 6px 0;
-  transition: all 0.5s ease;
-}
-
-.line.active {
-  opacity: 1;
-  font-size: 22px;
-  color: #ffd369;
-}
-
-.word.active {
-  background: rgba(255,211,105,0.4);
-  border-radius: 4px;
-  padding: 2px 4px;
+.line{opacity:.3;font-size:18px;margin:6px 0}
+.line.active{opacity:1;font-size:22px;color:#ffd369}
+.word.active{
+  background:rgba(255,211,105,.4);
+  padding:2px 4px;border-radius:4px
 }
 </style>
 </head>
@@ -66,110 +42,87 @@ html, body {
 <body>
 <div class="container">
   <button id="playBtn">▶️ सुनें</button>
-  <div id="lines"></div>
+  <div id="lineBox"></div>
 </div>
 
 <audio id="flute" src="flute.mp3" loop></audio>
 
 <script>
-/* ===============================
-   SUVIHAR CONTENT (20 lines)
-   =============================== */
-const suvichar = [
-  "शांत मन में ही सच्चा ज्ञान उतरता है",
-  "शब्द नहीं भावना परिवर्तन लाती है",
-  "जो स्वयं को समझ ले वही जगत को समझता है",
-  "विचार बीज हैं कर्म उनका वृक्ष",
-  "अहंकार ज्ञान का सबसे बड़ा शत्रु है",
-  "मौन भी एक उत्तर होता है",
-  "सत्य सरल होता है जटिल नहीं",
-  "प्रेम सबसे बड़ा तर्क है",
-  "जो सीखना छोड़ दे वही रुक जाता है",
-  "धैर्य समय का सम्मान है",
-  "चेतना का विस्तार ही विकास है",
-  "भय अज्ञान से जन्म लेता है",
-  "करुणा शक्ति की पहचान है",
-  "स्वतंत्र विवेक ही मानवता है",
-  "ज्ञान बांटने से बढ़ता है",
-  "शब्दों से अधिक भाव बोलते हैं",
-  "शांति सबसे बड़ी उपलब्धि है",
-  "स्वयं से मित्रता सर्वोच्च साधना है",
-  "जो समझ गया वही मुक्त हुआ",
-  "अंत में प्रेम ही शेष रहता है"
+/* ================= CONTENT ================= */
+const lines=[
+"शांत मन में ही सच्चा ज्ञान उतरता है",
+"शब्द नहीं भावना परिवर्तन लाती है",
+"जो स्वयं को समझ ले वही जगत को समझता है",
+"विचार बीज हैं कर्म उनका वृक्ष",
+"अहंकार ज्ञान का सबसे बड़ा शत्रु है"
 ];
 
-/* ===============================
-   DOM SETUP
-   =============================== */
-const linesDiv = document.getElementById("lines");
-const playBtn = document.getElementById("playBtn");
-const flute = document.getElementById("flute");
+/* ================= SETUP ================= */
+const box=document.getElementById("lineBox");
+const btn=document.getElementById("playBtn");
+const flute=document.getElementById("flute");
+flute.volume=0.18;
 
-flute.volume = 0.18;
-
-/* Render lines */
-suvichar.forEach((text, i) => {
-  const div = document.createElement("div");
-  div.className = "line";
-  div.id = "line-" + i;
-
-  text.split(" ").forEach(word => {
-    const span = document.createElement("span");
-    span.textContent = word + " ";
-    span.className = "word";
-    div.appendChild(span);
+lines.forEach((t,i)=>{
+  const d=document.createElement("div");
+  d.className="line";d.id="l"+i;
+  t.split(" ").forEach(w=>{
+    const s=document.createElement("span");
+    s.textContent=w+" ";d.appendChild(s)
   });
-
-  linesDiv.appendChild(div);
+  box.appendChild(d)
 });
 
-/* ===============================
-   SPEECH + HIGHLIGHT LOGIC
-   =============================== */
-async function speakLine(index) {
-  if (index >= suvichar.length) {
-    flute.pause();
-    return;
+/* ================= VOICE LOADER ================= */
+let femaleVoice=null;
+
+function loadVoices(){
+  const v=speechSynthesis.getVoices();
+  femaleVoice=v.find(x=>x.lang==="hi-IN")||v[0];
+  if(femaleVoice){
+    btn.classList.add("ready");
   }
+}
+speechSynthesis.onvoiceschanged=loadVoices;
+loadVoices();
 
-  document.querySelectorAll(".line").forEach(l => l.classList.remove("active"));
-  const lineEl = document.getElementById("line-" + index);
-  lineEl.classList.add("active");
+/* ================= SPEAK ================= */
+function speakLine(i){
+  if(i>=lines.length){flute.pause();return}
 
-  const words = lineEl.querySelectorAll(".word");
-  words.forEach(w => w.classList.remove("active"));
+  document.querySelectorAll(".line").forEach(l=>l.classList.remove("active"));
+  const line=document.getElementById("l"+i);
+  line.classList.add("active");
 
-  const utter = new SpeechSynthesisUtterance(suvichar[index]);
-  utter.lang = "hi-IN";
-  utter.rate = 0.9;     // human-like speed
-  utter.pitch = 1.1;    // feminine tone
+  const words=line.querySelectorAll("span");
+  let wi=0;
 
-  const voices = speechSynthesis.getVoices();
-  const female = voices.find(v => v.lang === "hi-IN");
-  if (female) utter.voice = female;
+  const u=new SpeechSynthesisUtterance(lines[i]);
+  u.lang="hi-IN";
+  u.rate=0.9;
+  u.pitch=1.1;
+  if(femaleVoice)u.voice=femaleVoice;
 
-  let wIndex = 0;
-  utter.onboundary = e => {
-    if (e.name === "word" && words[wIndex]) {
-      words.forEach(w => w.classList.remove("active"));
-      words[wIndex].classList.add("active");
-      wIndex++;
+  u.onboundary=e=>{
+    if(e.name==="word" && words[wi]){
+      words.forEach(w=>w.classList.remove("active"));
+      words[wi].classList.add("active");
+      wi++;
     }
   };
+  u.onend=()=>setTimeout(()=>speakLine(i+1),800);
 
-  utter.onend = () => {
-    setTimeout(() => speakLine(index + 1), 800); // pause after each line
-  };
-
-  speechSynthesis.speak(utter);
+  speechSynthesis.speak(u);
 }
 
-/* ===============================
-   PLAY BUTTON
-   =============================== */
-playBtn.onclick = () => {
+/* ================= BUTTON ================= */
+btn.onclick=()=>{
+  if(!btn.classList.contains("ready")){
+    alert("आवाज़ लोड हो रही है… एक सेकंड रुकिए");
+    return;
+  }
   speechSynthesis.cancel();
-  flute.currentTime = 0;
+  flute.currentTime=0;
   flute.play();
   speakLine(0);
 };
