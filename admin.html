@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel – सुविचार प्रबंधन</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    background: #0f172a;
+    color: #e5e7eb;
+    font-family: "Noto Serif Devanagari", serif;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Input box */
+textarea {
+    width: 100%;
+    min-height: 140px;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    resize: vertical;
+}
+
+/* Buttons */
+button {
+    margin: 6px 4px;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.save-btn {
+    background: #22c55e;
+    color: #022c22;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* List */
+.list {
+    margin-top: 25px;
+}
+
+.item {
+    background: #1e293b;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.item-text {
+    white-space: pre-wrap;
+    margin-bottom: 8px;
+}
+
+/* Action buttons */
+.edit { background: #38bdf8; }
+.delete { background: #ef4444; color: #fff; }
+.up, .down { background: #a78bfa; }
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #facc15;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🖊️ सुविचार एडमिन पैनल</h2>
+
+<textarea id="input" placeholder="यहाँ सुविचार लिखें..."></textarea>
+<br>
+<button class="save-btn" onclick="saveThought()">💾 Save सुविचार</button>
+
+<div class="list" id="list"></div>
+
+<a href="index.html" class="back">⬅️ वापस सुविचार पेज पर</a>
+
+<script>
+let thoughts = JSON.parse(localStorage.getItem("suvichar")) || [];
+
+/* Save new */
+function saveThought() {
+    const input = document.getElementById("input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    thoughts.push(text);
+    input.value = "";
+    saveAndRender();
+}
+
+/* Edit */
+function editThought(i) {
+    const updated = prompt("सुविचार सुधारें:", thoughts[i]);
+    if (updated !== null && updated.trim() !== "") {
+        thoughts[i] = updated.trim();
+        saveAndRender();
+    }
+}
+
+/* Delete */
+function deleteThought(i) {
+    if (confirm("यह सुविचार हटाना चाहते हैं?")) {
+        thoughts.splice(i, 1);
+        saveAndRender();
+    }
+}
+
+/* Move up */
+function moveUp(i) {
+    if (i === 0) return;
+    [thoughts[i - 1], thoughts[i]] = [thoughts[i], thoughts[i - 1]];
+    saveAndRender();
+}
+
+/* Move down */
+function moveDown(i) {
+    if (i === thoughts.length - 1) return;
+    [thoughts[i + 1], thoughts[i]] = [thoughts[i], thoughts[i + 1]];
+    saveAndRender();
+}
+
+/* Save + render */
+function saveAndRender() {
+    localStorage.setItem("suvichar", JSON.stringify(thoughts));
+    render();
+}
+
+/* Render list */
+function render() {
+    const list = document.getElementById("list");
+    list.innerHTML = "<h3>📜 सेव किए गए सुविचार</h3>";
+
+    thoughts.forEach((t, i) => {
+        const div = document.createElement("div");
+        div.className = "item";
+
+        const text = document.createElement("div");
+        text.className = "item-text";
+        text.textContent = t;
+
+        const actions = document.createElement("div");
+        actions.innerHTML = `
+            <button class="edit" onclick="editThought(${i})">✏️ Edit</button>
+            <button class="delete" onclick="deleteThought(${i})">🗑️ Delete</button>
+            <button class="up" onclick="moveUp(${i})">⬆️</button>
+            <button class="down" onclick="moveDown(${i})">⬇️</button>
+        `;
+
+        div.appendChild(text);
+        div.appendChild(actions);
+        list.appendChild(div);
+    });
+}
+
+render();
+</script>
+
+</body>
+</html>
